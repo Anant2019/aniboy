@@ -9,161 +9,195 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Plus+Jakarta+Sans:wght@300;800&family=Syne:wght@800&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #000; --bg: #fff; --primary: #000; }
-        /* MODE: ON DUTY (Corporate) */
-        .mode-on { --bg: #f8f8f8; --primary: #000; --accent: #666; font-family: 'Plus Jakarta Sans', sans-serif; }
-        /* MODE: OFF DUTY (Rebel) */
-        .mode-off { --bg: #050505; --primary: #fff; --accent: #00ff41; font-family: 'Syne', sans-serif; }
+        :root { --primary: #000; --bg: #fff; --card: #f4f4f4; --accent: #666; }
+        .mode-off { --primary: #fff; --bg: #050505; --card: #111; --accent: #00ff41; }
 
-        body { background-color: var(--bg); color: var(--primary); transition: all 0.8s cubic-bezier(0.7, 0, 0.3, 1); overflow-x: hidden; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--primary); 
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
         .unbounded { font-family: 'Unbounded', sans-serif; }
         
-        /* The Aura Lab Canvas */
-        #aura-canvas { 
-            background: var(--bg); 
-            border: 1px solid rgba(128,128,128,0.2); 
-            transition: all 0.5s ease;
-        }
+        /* Layout Fixes to prevent overlapping */
+        .section-container { position: relative; width: 100%; padding: 100px 5%; z-index: 10; }
         
-        .shirt-base {
-            width: 450px;
-            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.1));
-            transition: all 0.5s ease;
+        /* Product Grid Styling */
+        .product-card { 
+            background: var(--card); 
+            border-radius: 32px; 
+            overflow: hidden; 
+            transition: transform 0.4s ease, background 0.6s ease;
+        }
+        .product-card:hover { transform: translateY(-10px); }
+        .product-img { width: 100%; height: 400px; object-fit: cover; transition: filter 0.5s ease; }
+
+        /* Aura Lab Canvas */
+        #aura-canvas { 
+            background: var(--card); 
+            height: 600px; 
+            border-radius: 40px; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
         }
 
-        /* Draggable Logo Style */
-        #user-logo { 
-            position: absolute; 
-            width: 80px; 
-            cursor: move; 
-            z-index: 50; 
-            mix-blend-mode: multiply;
-        }
+        /* Draggable Logo */
+        #user-logo { position: absolute; width: 70px; cursor: move; z-index: 50; mix-blend-mode: multiply; }
         .mode-off #user-logo { mix-blend-mode: screen; }
 
-        /* Vibe Switcher Component */
+        /* Floating Mode Toggle */
         .vibe-dock {
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; display: flex; gap: 10px; padding: 8px;
-            background: rgba(0,0,0,0.1); backdrop-filter: blur(20px); border-radius: 100px;
-            border: 1px solid rgba(255,255,255,0.1);
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; display: flex; gap: 8px; padding: 6px;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-radius: 100px;
         }
-        .vibe-trigger { 
-            padding: 12px 30px; border-radius: 100px; font-size: 11px; 
-            font-weight: 900; text-transform: uppercase; letter-spacing: 2px;
-            transition: all 0.4s ease;
+        .vibe-btn { 
+            padding: 12px 24px; border-radius: 100px; font-size: 10px; 
+            font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #666;
         }
-        .active-vibe { background: var(--primary); color: var(--bg); transform: scale(1.1); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .vibe-btn.active { background: white; color: black; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); }
+        /* Cart Sidebar */
+        #cart-panel {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px; height: 100%;
+            background: var(--bg); border-left: 1px solid rgba(128,128,128,0.2);
+            transform: translateX(100%); transition: transform 0.5s ease; z-index: 2000;
+        }
     </style>
 </head>
 <body class="mode-on">
 
-    <nav class="fixed top-0 w-full z-[100] p-8 flex justify-between items-center mix-blend-difference text-white">
-        <div class="unbounded text-2xl font-black italic tracking-tighter">ani boy.</div>
-        <div class="flex gap-10 text-[10px] font-black uppercase tracking-[0.3em]">
-            <a href="#lab" class="hover:text-zinc-400">The Lab</a>
-            <a href="#shop" class="hover:text-zinc-400">Archive</a>
-            <div class="relative cursor-pointer" onclick="toggleCart()">BAG <span id="count" class="text-[8px] absolute -top-2 -right-3 bg-white text-black px-1 rounded-full">0</span></div>
+    <nav class="fixed top-0 w-full z-[100] px-10 py-6 flex justify-between items-center mix-blend-difference text-white">
+        <div class="unbounded text-2xl font-black italic">ani boy.</div>
+        <div class="flex gap-8 text-[10px] font-black uppercase tracking-widest">
+            <span class="cursor-pointer" onclick="toggleCart(true)">Bag (<span id="cart-count">0</span>)</span>
         </div>
     </nav>
 
-    <header class="h-[80vh] flex flex-col justify-center items-center px-10">
-        <h1 id="hero-title" class="unbounded text-[12vw] leading-[0.8] text-center font-black italic uppercase">
-            RECODE<br><span class="opacity-10">ENTITY</span>
+    <header class="section-container min-h-[70vh] flex flex-col justify-center items-center">
+        <h1 id="hero-title" class="unbounded text-[10vw] leading-none text-center font-black italic uppercase">
+            RECODE<br><span class="opacity-10">UNIFORM</span>
         </h1>
-        <p class="mt-10 font-bold uppercase tracking-[1em] text-[10px] opacity-40">Engineering the Neo-Corporate Aura</p>
+        <p id="hero-tag" class="mt-8 font-bold uppercase tracking-[0.5em] text-[10px] text-zinc-500">Corporate-Grade. Rebel-Minded.</p>
     </header>
 
-    <section id="lab" class="min-h-screen py-20 px-10">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            
-            <div id="aura-canvas" class="relative h-[600px] md:h-[750px] rounded-[3rem] overflow-hidden flex items-center justify-center">
-                <div class="absolute top-10 left-10">
-                    <span class="text-[10px] font-black uppercase tracking-widest opacity-50">Virtual_Mannequin_v4.0</span>
+    <section class="section-container">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="unbounded text-3xl font-black italic uppercase" id="catalog-title">On-Duty / Essentials</h2>
+                <div class="text-[10px] font-bold opacity-40">2026_COLLECTION_v1</div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 </div>
-                
-                <img id="shirt-img" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800" class="shirt-base" alt="ani boy shirt">
-                
-                <img id="user-logo" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="hidden" alt="Custom Logo">
-                
-                <div class="absolute bottom-10 left-10 right-10 flex justify-between items-end">
-                    <div class="flex gap-3">
-                        <button onclick="applyColor('grayscale(100%)')" class="w-8 h-8 rounded-full border border-black bg-zinc-400"></button>
-                        <button onclick="applyColor('hue-rotate(240deg) brightness(0.7)')" class="w-8 h-8 rounded-full border border-black bg-blue-900"></button>
-                        <button onclick="applyColor('none')" class="w-8 h-8 rounded-full border border-black bg-white"></button>
-                    </div>
-                    <p class="text-[9px] font-bold uppercase tracking-tighter max-w-[100px] leading-tight">Drag Logo to position</p>
+        </div>
+    </section>
+
+    <section id="lab" class="section-container bg-zinc-50 dark:bg-zinc-900 transition-colors">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            
+            <div class="lg:col-span-6">
+                <div id="aura-canvas">
+                    <img id="lab-shirt" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800" class="w-[400px] drop-shadow-2xl" alt="Custom Shirt">
+                    <img id="user-logo" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="hidden" alt="Logo">
                 </div>
             </div>
 
-            <div class="space-y-12">
-                <div>
-                    <h2 class="unbounded text-6xl font-black italic uppercase leading-none">Aura <br> Lab.</h2>
-                    <p class="mt-6 text-zinc-500 font-medium leading-relaxed">In 2026, the uniform is not static. Upload your brand ID, position your mark, and recode your corporate presence.</p>
-                </div>
-
-                <div class="space-y-6">
-                    <label class="block group cursor-pointer border-2 border-dashed border-zinc-200 p-12 rounded-[2rem] text-center hover:bg-zinc-50 hover:border-black transition-all">
-                        <span class="unbounded text-[10px] font-black uppercase tracking-widest">Upload Custom Mark</span>
-                        <input type="file" class="hidden" onchange="uploadLogo(event)">
+            <div class="lg:col-span-6 space-y-8">
+                <h2 class="unbounded text-5xl font-black italic uppercase">The Lab.</h2>
+                <p class="text-zinc-500 font-medium">Position your mark. Define your aura. Drag your uploaded identity across the garment to see the future of bespoke clothing.</p>
+                
+                <div class="flex flex-col gap-4">
+                    <label class="cursor-pointer border-2 border-dashed border-zinc-300 p-8 rounded-3xl text-center hover:border-black transition-all">
+                        <span class="text-[10px] font-black uppercase tracking-widest">Upload Custom Logo</span>
+                        <input type="file" class="hidden" onchange="handleUpload(event)">
                     </label>
-
-                    <div class="flex items-center justify-between border-y border-zinc-100 py-6">
-                        <span class="text-xs font-black uppercase italic">Custom Build Cost</span>
-                        <span class="unbounded text-2xl font-black">₹7,999</span>
-                    </div>
-
-                    <button onclick="addToBag()" class="w-full bg-black text-white py-8 rounded-full unbounded text-[10px] font-black uppercase tracking-[0.4em] hover:scale-[1.02] transition-transform shadow-2xl">
-                        Commit to Archive
-                    </button>
+                    <button onclick="addToBag('Custom Aura Shirt', 7999)" class="w-full bg-black text-white py-6 rounded-full unbounded text-[10px] font-black uppercase tracking-[0.3em]">Commit to Archive</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="vibe-dock">
-        <button id="on-duty" onclick="setMode('on')" class="vibe-trigger active-vibe">On Duty</button>
-        <button id="off-duty" onclick="setMode('off')" class="vibe-trigger">Off Duty</button>
+    <div id="cart-panel" class="p-10 flex flex-col">
+        <div class="flex justify-between items-center mb-10">
+            <h3 class="unbounded text-xl font-black uppercase italic">Bag</h3>
+            <button onclick="toggleCart(false)" class="font-bold text-xs">[CLOSE]</button>
+        </div>
+        <div id="cart-items" class="flex-grow space-y-4"></div>
+        <div class="pt-8 border-t">
+            <div class="flex justify-between mb-4 font-bold"><span>Total</span><span id="cart-total">₹0</span></div>
+            <button class="w-full bg-black text-white py-6 rounded-full text-[10px] font-black uppercase tracking-widest">Checkout</button>
+        </div>
     </div>
 
-    <div id="cart" class="fixed top-0 right-0 h-screen w-full md:w-[450px] bg-white text-black z-[200] translate-x-full transition-transform duration-700 p-12 flex flex-col">
-        <div class="flex justify-between items-center mb-10">
-            <h3 class="unbounded text-xl font-black uppercase italic">Inventory</h3>
-            <button onclick="toggleCart()" class="font-bold text-xs">[X]</button>
-        </div>
-        <div id="cart-list" class="flex-grow italic text-zinc-400">Empty</div>
-        <button class="w-full bg-black text-white py-6 rounded-full text-[10px] font-black uppercase tracking-widest">Checkout</button>
+    <div class="vibe-dock">
+        <button id="btn-on" onclick="setMode('on')" class="vibe-btn active">On Duty</button>
+        <button id="btn-off" onclick="setMode('off')" class="vibe-btn">Off Duty</button>
     </div>
 
     <script>
         gsap.registerPlugin(Draggable);
 
-        // 1. THE MODE SWITCHER (The "Senior" Difference)
+        const products = {
+            on: [
+                { name: "Executive Silk Blazer", price: 18500, img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600" },
+                { name: "Minimalist Oxford", price: 6200, img: "https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?q=80&w=600" },
+                { name: "Structured Chino", price: 5800, img: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=600" }
+            ],
+            off: [
+                { name: "Cyber Rebel Hoodie", price: 9500, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600" },
+                { name: "Recode Graphic Tee", price: 3200, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" },
+                { name: "Impact Cargo Tech", price: 11200, img: "https://images.unsplash.com/photo-1517441531661-5903e9e957ad?q=80&w=600" }
+            ]
+        };
+
+        let currentCart = [];
+
         function setMode(mode) {
             const body = document.body;
-            const hero = document.getElementById('hero-title');
+            const title = document.getElementById('hero-title');
+            const catalogTitle = document.getElementById('catalog-title');
             
+            // UI Button states
+            document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${mode}`).classList.add('active');
+
             if(mode === 'off') {
                 body.className = 'mode-off';
-                document.getElementById('off-duty').classList.add('active-vibe');
-                document.getElementById('on-duty').classList.remove('active-vibe');
-                hero.innerHTML = 'BREAK<br><span class="text-[#00ff41]">RULES</span>';
-                gsap.to("#aura-canvas", { borderColor: "#00ff41", duration: 0.5 });
+                title.innerHTML = 'BREAK<br><span class="text-[#00ff41]">RULES</span>';
+                catalogTitle.innerText = "Off-Duty / Rebel Drop";
+                renderProducts(products.off);
             } else {
                 body.className = 'mode-on';
-                document.getElementById('on-duty').classList.add('active-vibe');
-                document.getElementById('off-duty').classList.remove('active-vibe');
-                hero.innerHTML = 'RECODE<br><span class="opacity-10">ENTITY</span>';
-                gsap.to("#aura-canvas", { borderColor: "rgba(0,0,0,0.1)", duration: 0.5 });
+                title.innerHTML = 'RECODE<br><span class="opacity-10">UNIFORM</span>';
+                catalogTitle.innerText = "On-Duty / Essentials";
+                renderProducts(products.on);
             }
         }
 
-        // 2. AURA ENGINE: LOGO UPLOAD & DRAG
-        function uploadLogo(event) {
+        function renderProducts(list) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = list.map(p => `
+                <div class="product-card">
+                    <img src="${p.img}" class="product-img" alt="${p.name}">
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <h4 class="unbounded text-xs font-black uppercase italic tracking-tighter">${p.name}</h4>
+                            <span class="text-xs font-bold">₹${p.price.toLocaleString()}</span>
+                        </div>
+                        <button onclick="addToBag('${p.name}', ${p.price})" class="w-full py-4 border border-zinc-200 text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">Add to Bag</button>
+                    </div>
+                </div>
+            `).join('');
+            gsap.from(".product-card", { opacity: 0, y: 30, duration: 0.5, stagger: 0.1 });
+        }
+
+        function handleUpload(event) {
             const file = event.target.files[0];
             const logo = document.getElementById('user-logo');
             if (file) {
@@ -171,36 +205,33 @@
                 reader.onload = (e) => {
                     logo.src = e.target.result;
                     logo.classList.remove('hidden');
-                    // Initialize Draggable after image is loaded
-                    Draggable.create("#user-logo", {
-                        bounds: "#aura-canvas",
-                        inertia: true
-                    });
+                    Draggable.create("#user-logo", { bounds: "#aura-canvas", inertia: true });
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        function applyColor(filter) {
-            gsap.to("#shirt-img", { filter: filter, duration: 0.6 });
+        function addToBag(name, price) {
+            currentCart.push({ name, price });
+            document.getElementById('cart-count').innerText = currentCart.length;
+            updateCartUI();
+            toggleCart(true);
         }
 
-        // 3. E-COMMERCE CORE
-        let cart = 0;
-        function addToBag() {
-            cart++;
-            document.getElementById('count').innerText = cart;
-            gsap.from("#count", { scale: 2, duration: 0.3 });
-            toggleCart();
+        function updateCartUI() {
+            const list = document.getElementById('cart-items');
+            const total = document.getElementById('cart-total');
+            list.innerHTML = currentCart.map(i => `<div class="flex justify-between text-xs font-bold uppercase"><span>${i.name}</span><span>₹${i.price}</span></div>`).join('');
+            const sum = currentCart.reduce((a, b) => a + b.price, 0);
+            total.innerText = `₹${sum.toLocaleString()}`;
         }
 
-        function toggleCart() {
-            const c = document.getElementById('cart');
-            c.classList.toggle('translate-x-full');
+        function toggleCart(show) {
+            document.getElementById('cart-panel').style.transform = show ? "translateX(0)" : "translateX(100%)";
         }
 
-        // Entrance Animation
-        gsap.from("#hero-title", { y: 200, opacity: 0, duration: 2, ease: "expo.out" });
+        // Initialize
+        setMode('on');
     </script>
 </body>
 </html>
