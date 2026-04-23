@@ -3,132 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ani boy. | Engineering Your Aura</title>
+    <title>ani boy. | Engineering Luxury</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #00ff41; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fff; color: #000; overflow-x: hidden; }
-        .sync { font-family: 'Syncopate', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); }
-        .bento-card { transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); cursor: pointer; overflow: hidden; border: 1px solid #eee; }
-        .bento-card:hover { transform: translateY(-10px); box-shadow: 0 40px 80px rgba(0,0,0,0.1); border-color: #000; }
-        .custom-image { transition: filter 0.8s ease, transform 0.8s ease; }
-        #cursor-ball { pointer-events: none; position: fixed; top: 0; left: 0; width: 12px; height: 12px; background: #000; border-radius: 50%; z-index: 999; }
+        :root { --accent: #00FF41; --bg: #000000; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; cursor: none; }
+        .syne { font-family: 'Syne', sans-serif; }
+        
+        /* Sexy Glitch Effect */
+        .glitch { font-weight: 900; text-transform: uppercase; position: relative; text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; animation: glitch 725ms infinite; }
+        @keyframes glitch { 0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; } 15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; } 16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; } 100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.0125em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; } }
+
+        /* Floating 3D Image Effect */
+        .hero-img-container { perspective: 1000px; }
+        .hero-img { transform-style: preserve-3d; transition: transform 0.1s ease-out; filter: drop-shadow(0 20px 50px rgba(0,255,65,0.2)); }
+        
+        /* Custom Liquid Cursor */
+        #cursor { position: fixed; width: 40px; height: 40px; background: #fff; border-radius: 50%; pointer-events: none; mix-blend-mode: difference; z-index: 9999; transition: transform 0.1s; }
+        
+        .bento-dark { background: #0a0a0a; border: 1px solid #1a1a1a; transition: all 0.4s ease; }
+        .bento-dark:hover { border-color: var(--accent); background: #0f0f0f; }
     </style>
 </head>
 <body>
 
-    <div id="cursor-ball"></div>
+    <div id="cursor"></div>
 
-    <nav class="fixed top-0 w-full z-[100] glass border-b border-gray-100 px-6 py-5 flex justify-between items-center">
-        <div class="sync text-xl tracking-tighter uppercase font-bold">ani boy<span class="text-zinc-400">.</span></div>
-        <div class="hidden md:flex gap-12 text-[10px] font-extrabold uppercase tracking-widest">
-            <a href="#" class="hover:line-through">Shop</a>
-            <a href="#" class="hover:line-through">The Lab</a>
-            <a href="#" class="hover:line-through">Archive</a>
+    <nav class="fixed top-0 w-full z-[100] mix-blend-difference p-8 flex justify-between items-center">
+        <div class="syne text-2xl font-black italic tracking-tighter">ani boy<span class="text-[#00FF41]">.</span></div>
+        <div class="flex gap-12 text-[10px] font-black uppercase tracking-[0.4em] hidden md:flex">
+            <a href="#" class="hover:text-[#00FF41] transition-all">Collections</a>
+            <a href="#" class="hover:text-[#00FF41] transition-all">Aura Lab</a>
+            <a href="#" class="hover:text-[#00FF41] transition-all">Archive</a>
         </div>
-        <div class="flex gap-4 items-center">
-            <span class="text-[10px] font-bold">IN / PUNE</span>
-            <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white text-xs">0</div>
-        </div>
+        <div class="bg-white text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-transform cursor-pointer">Shop Now</div>
     </nav>
 
-    <section class="min-h-screen flex flex-col pt-32 px-6">
-        <div class="max-w-7xl mx-auto w-full">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
-                <h1 class="sync text-6xl md:text-[12vw] leading-none uppercase hero-text">
-                    AURA<br><span class="text-zinc-200">SHIFT</span>
-                </h1>
-                <div class="max-w-xs text-right space-y-4 pb-4">
-                    <p class="text-xs font-medium uppercase tracking-tighter text-zinc-500">2026 Collection — Drop 01</p>
-                    <p class="text-sm leading-relaxed font-semibold">Corporate textiles re-engineered for the streetwear generation.</p>
-                </div>
+    <main class="relative z-10">
+        
+        <section class="h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center -z-10 opacity-10">
+                <h2 class="syne text-[30vw] font-black italic">ANI</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-20">
-                <div class="md:col-span-2 h-[600px] bento-card rounded-[2rem] relative bg-zinc-100 p-12 flex flex-col justify-between" onclick="triggerAura()">
-                    <div class="z-10">
-                        <span class="bg-black text-white px-3 py-1 text-[10px] rounded-full uppercase tracking-widest font-bold">New Technology</span>
-                        <h2 class="text-4xl font-extrabold mt-4 italic uppercase">Design Your <br> Own Fit.</h2>
-                    </div>
+            <div class="text-center">
+                <h1 class="syne text-[10vw] md:text-[15vw] leading-[0.85] font-black italic glitch">AURA<br>SHIFT</h1>
+                <p class="mt-8 text-zinc-500 tracking-[0.8em] text-[10px] uppercase font-black translate-y-10 opacity-0" id="hero-tagline">Beyond the Corporate Blueprint</p>
+            </div>
+
+            <div class="hero-img-container mt-[-10vh] md:mt-[-20vh]">
+                <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=800" 
+                     id="hero-img" class="w-[300px] md:w-[500px] hero-img" alt="Premium Black Shirt">
+            </div>
+        </section>
+
+        <section class="py-40 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     
-                    <div class="absolute inset-0 flex items-center justify-center p-20">
-                        <img id="main-shirt" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800" 
-                             alt="Trendy Shirt" class="w-full h-full object-contain custom-image drop-shadow-2xl">
+                    <div class="bento-dark rounded-[3rem] p-12 min-h-[600px] flex flex-col justify-between relative overflow-hidden group">
+                        <div class="z-10">
+                            <span class="text-[#00FF41] font-mono text-xs">// ENGINE_01</span>
+                            <h2 class="syne text-5xl font-black uppercase mt-4 italic">The <br> Customizer</h2>
+                        </div>
+                        
+                        <div class="z-10 flex flex-col gap-8">
+                            <div class="flex gap-4">
+                                <button onclick="changeAura('#00FF41')" class="w-14 h-14 rounded-full bg-[#00FF41] border-4 border-black ring-1 ring-white"></button>
+                                <button onclick="changeAura('#fff')" class="w-14 h-14 rounded-full bg-white border-4 border-black"></button>
+                                <button onclick="changeAura('#ff003c')" class="w-14 h-14 rounded-full bg-[#ff003c] border-4 border-black"></button>
+                            </div>
+                            <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest max-w-xs leading-relaxed">
+                                Our AI maps your vibe onto premium textiles. Change the Aura. Change the perception.
+                            </p>
+                        </div>
+
+                        <div id="aura-glow" class="absolute -bottom-20 -right-20 w-80 h-80 bg-[#00FF41]/20 rounded-full blur-[100px] transition-all duration-1000"></div>
                     </div>
 
-                    <div class="z-10 flex gap-4">
-                        <button onclick="updateAura('grayscale(1)')" class="w-10 h-10 rounded-full border border-black bg-zinc-400"></button>
-                        <button onclick="updateAura('hue-rotate(90deg) saturate(2)')" class="w-10 h-10 rounded-full border border-black bg-purple-500"></button>
-                        <button onclick="updateAura('none')" class="w-10 h-10 rounded-full border border-black bg-white"></button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bento-dark rounded-[3rem] p-8 flex flex-col justify-center items-center group">
+                            <img src="https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=400" class="w-40 grayscale group-hover:grayscale-0 transition-all duration-700">
+                            <span class="mt-6 text-[10px] font-black uppercase tracking-widest text-[#00FF41]">Drop 01: Core</span>
+                        </div>
+                        <div class="bento-dark rounded-[3rem] p-8 flex flex-col justify-between bg-zinc-900 overflow-hidden relative">
+                            <h3 class="syne text-xl font-black italic uppercase z-10">Upload <br> Your Mood</h3>
+                            <div class="mt-10 border-2 border-dashed border-zinc-700 p-8 rounded-2xl flex flex-col items-center justify-center gap-4 z-10">
+                                <span class="text-xs font-bold text-zinc-500 uppercase italic">Drop photo here</span>
+                            </div>
+                        </div>
+                        <div class="bento-dark rounded-[3rem] col-span-2 p-12 flex justify-between items-center group hover:bg-[#00FF41] hover:text-black transition-all cursor-pointer">
+                            <span class="syne text-4xl font-black uppercase italic italic">Launch the Lab</span>
+                            <span class="text-4xl">→</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="flex flex-col gap-4">
-                    <div class="h-[290px] bento-card rounded-[2rem] bg-black text-white p-8 group">
-                        <h3 class="text-2xl font-bold italic uppercase">Upload <br> Inspo.</h3>
-                        <p class="text-[10px] text-zinc-500 mt-4 uppercase tracking-widest font-bold">AI Pattern Mapping</p>
-                        <div class="mt-8 border-2 border-dashed border-zinc-700 h-20 rounded-xl flex items-center justify-center group-hover:border-white transition-all">
-                             <span class="text-[10px] font-bold">DRAG PHOTO HERE</span>
-                        </div>
-                    </div>
-                    <div class="h-[290px] bento-card rounded-[2rem] bg-zinc-100 relative overflow-hidden group">
-                        <img src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
-                        <div class="absolute inset-0 bg-black/20 p-8 flex items-end">
-                            <span class="text-white font-bold uppercase tracking-widest text-xs">View Lookbook</span>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer class="p-12 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8">
-        <div class="sync text-sm font-bold italic">ani boy official.</div>
-        <div class="flex gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-400">
-            <span>Instagram</span>
-            <span>TikTok</span>
-            <span>WhatsApp Lab</span>
-        </div>
+    </main>
+
+    <footer class="p-20 text-center border-t border-zinc-900">
+        <div class="syne text-6xl font-black opacity-10 mb-8 italic">ANI BOY.</div>
+        <p class="text-zinc-700 text-[10px] font-black uppercase tracking-[1em]">Engineered for 2026</p>
     </footer>
 
     <script>
-        // Smooth Cursor
-        const cursor = document.getElementById('cursor-ball');
-        window.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX - 6, y: e.clientY - 6, duration: 0.3, ease: "power2.out" });
+        // 1. Sexy Mouse Follower
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.6, ease: "power4.out" });
         });
 
-        // Entrance Animations
-        gsap.from(".hero-text", { opacity: 0, y: 100, duration: 1.2, ease: "expo.out", delay: 0.5 });
-        gsap.from(".bento-card", { opacity: 0, y: 50, duration: 1, stagger: 0.2, ease: "power3.out", delay: 0.8 });
+        // 2. 3D Tilt Effect on Hero Image
+        const heroImg = document.getElementById('hero-img');
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.clientX) / 25;
+            const y = (window.innerHeight / 2 - e.clientY) / 25;
+            gsap.to(heroImg, { rotationY: x, rotationX: -y, duration: 1, ease: "power2.out" });
+        });
 
-        // Aura Customization Function
-        function updateAura(filterValue) {
-            const shirt = document.getElementById('main-shirt');
-            gsap.to(shirt, { 
-                filter: filterValue, 
-                scale: 1.05, 
-                duration: 0.4, 
-                onComplete: () => gsap.to(shirt, { scale: 1, duration: 0.4 }) 
-            });
+        // 3. Entrance Animations
+        window.onload = () => {
+            gsap.to("#hero-tagline", { opacity: 1, y: 0, duration: 1.5, ease: "expo.out", delay: 0.8 });
+            gsap.from(".hero-img", { scale: 0.5, opacity: 0, duration: 2, ease: "expo.out" });
+        };
+
+        // 4. Customizer Action
+        function changeAura(color) {
+            gsap.to("#aura-glow", { backgroundColor: color, duration: 1 });
+            gsap.to(".glitch", { color: color, duration: 0.5 });
+            // Simulate a "re-coloring" of the brand accent
+            document.documentElement.style.setProperty('--accent', color);
         }
-
-        // Add magnetic effect to cards
-        document.querySelectorAll('.bento-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                gsap.to(card, { x: x * 0.05, y: y * 0.05, duration: 0.4 });
-            });
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, { x: 0, y: 0, duration: 0.4 });
-            });
-        });
     </script>
 </body>
 </html>
