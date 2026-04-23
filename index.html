@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ani boy | The New Corporate Standard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .stroke-text {
+            -webkit-text-stroke: 1.5px black;
+            color: transparent;
+        }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+    <nav class="fixed top-0 w-full z-50 bg-glass border-b border-gray-100 px-6 py-4 flex justify-between items-center uppercase tracking-tighter font-bold">
+        <div class="text-2xl font-black italic tracking-tighter">ani boy.</div>
+        <div class="hidden md:flex gap-8 text-xs">
+            <a href="#" class="hover:underline underline-offset-4">New Drops</a>
+            <a href="#" class="hover:underline underline-offset-4">Work-Wear</a>
+            <a href="#" class="hover:underline underline-offset-4">The Brand</a>
+        </div>
+        <div class="text-xs border border-black px-4 py-2 hover:bg-black hover:text-white transition-all cursor-pointer">
+            CART (0)
+        </div>
+    </nav>
+
+    <header class="relative h-screen flex items-center justify-center overflow-hidden bg-[#f4f4f4]">
+        <div class="text-center z-10 px-4">
+            <h1 class="text-6xl md:text-9xl font-black uppercase leading-none mb-4">
+                Not Your <br> 
+                <span class="stroke-text">Average Boy</span>
+            </h1>
+            <p class="text-gray-500 font-medium tracking-widest uppercase text-sm mb-8">Redefining Corporate Streetwear</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button class="bg-black text-white px-12 py-4 font-bold uppercase text-xs tracking-widest hover:bg-zinc-800 transition-all">Shop Collection</button>
+                <button class="border border-black text-black px-12 py-4 font-bold uppercase text-xs tracking-widest hover:bg-black hover:text-white transition-all">Lookbook</button>
+            </div>
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center select-none opacity-[0.03]">
+            <span class="text-[30vw] font-black">2026</span>
+        </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-1 p-1 bg-white">
+        <div class="relative h-[600px] bg-zinc-200 overflow-hidden group">
+            <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all"></div>
+            <div class="absolute bottom-10 left-10 text-white z-10">
+                <h2 class="text-4xl font-black uppercase italic">The Boardroom</h2>
+                <p class="text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-500">Oversized Blazers & Silk Knits</p>
+            </div>
+        </div>
+        <div class="relative h-[600px] bg-zinc-300 overflow-hidden group">
+            <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all"></div>
+            <div class="absolute bottom-10 right-10 text-right text-white z-10">
+                <h2 class="text-4xl font-black uppercase italic">The After-Hours</h2>
+                <p class="text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-500">Breathable Tech-Streetwear</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-8 text-center max-w-4xl mx-auto">
+        <h3 class="text-xs font-bold uppercase tracking-[0.5em] text-zinc-400 mb-6">Our Philosophy</h3>
+        <p class="text-2xl md:text-4xl font-medium leading-tight tracking-tight">
+            "ani boy" is built for the young professional who refuses to wear a boring suit. We blend <span class="italic font-bold">Gen-Z aesthetics</span> with <span class="italic font-bold">high-end corporate fabrics</span>.
+        </p>
+    </section>
+
+    <footer class="bg-black text-white p-12">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-12">
+            <div>
+                <h2 class="text-3xl font-black italic mb-4">ani boy.</h2>
+                <p class="text-zinc-500 text-sm max-w-xs">High-performance apparel for the digital generation. Designed for the hustle.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-12 uppercase text-[10px] tracking-widest font-bold">
+                <div class="flex flex-col gap-3">
+                    <span class="text-zinc-600">Company</span>
+                    <a href="#" class="hover:text-zinc-400">About</a>
+                    <a href="#" class="hover:text-zinc-400">Careers</a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <span class="text-zinc-600">Support</span>
+                    <a href="#" class="hover:text-zinc-400">Shipping</a>
+                    <a href="#" class="hover:text-zinc-400">Returns</a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-20 border-t border-zinc-800 pt-8 text-[10px] text-zinc-600 uppercase tracking-widest">
+            © 2026 ani boy official. All Rights Reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
