@@ -3,143 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ani boy. | Engineering Luxury</title>
+    <title>ani boy. | Corporate Disruptors</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;900&family=Inter:wght@300;700&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #00FF41; --bg: #000000; }
+        :root { --accent: #ffffff; --bg: #000; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; cursor: none; }
-        .syne { font-family: 'Syne', sans-serif; }
+        .unbounded { font-family: 'Unbounded', sans-serif; }
         
-        /* Sexy Glitch Effect */
-        .glitch { font-weight: 900; text-transform: uppercase; position: relative; text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; animation: glitch 725ms infinite; }
-        @keyframes glitch { 0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; } 15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; } 16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; } 100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.0125em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; } }
+        /* The "Sexy" Liquid Background */
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; filter: blur(80px); opacity: 0.4; }
+        
+        /* Magnetic Button */
+        .mag-btn { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        /* Custom Cursor */
+        #cursor { width: 10px; height: 10px; background: white; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+        #cursor-aura { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: all 0.3s ease; }
 
-        /* Floating 3D Image Effect */
-        .hero-img-container { perspective: 1000px; }
-        .hero-img { transform-style: preserve-3d; transition: transform 0.1s ease-out; filter: drop-shadow(0 20px 50px rgba(0,255,65,0.2)); }
-        
-        /* Custom Liquid Cursor */
-        #cursor { position: fixed; width: 40px; height: 40px; background: #fff; border-radius: 50%; pointer-events: none; mix-blend-mode: difference; z-index: 9999; transition: transform 0.1s; }
-        
-        .bento-dark { background: #0a0a0a; border: 1px solid #1a1a1a; transition: all 0.4s ease; }
-        .bento-dark:hover { border-color: var(--accent); background: #0f0f0f; }
+        /* Vibe Toggle */
+        .vibe-switch { border: 1px solid #333; border-radius: 100px; padding: 4px; display: flex; gap: 4px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+        .vibe-btn { padding: 8px 20px; border-radius: 100px; font-size: 10px; font-weight: 900; text-transform: uppercase; transition: all 0.4s; }
+        .vibe-active { background: white; color: black; }
+
+        .image-reveal { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); transition: clip-path 1s ease; }
     </style>
 </head>
 <body>
 
     <div id="cursor"></div>
+    <div id="cursor-aura"></div>
+    <canvas id="bg-canvas"></canvas>
 
-    <nav class="fixed top-0 w-full z-[100] mix-blend-difference p-8 flex justify-between items-center">
-        <div class="syne text-2xl font-black italic tracking-tighter">ani boy<span class="text-[#00FF41]">.</span></div>
-        <div class="flex gap-12 text-[10px] font-black uppercase tracking-[0.4em] hidden md:flex">
-            <a href="#" class="hover:text-[#00FF41] transition-all">Collections</a>
-            <a href="#" class="hover:text-[#00FF41] transition-all">Aura Lab</a>
-            <a href="#" class="hover:text-[#00FF41] transition-all">Archive</a>
+    <nav class="fixed top-0 w-full z-[100] p-10 flex justify-between items-center">
+        <div class="unbounded text-2xl font-black italic">ani boy.</div>
+        
+        <div class="vibe-switch">
+            <button id="btn-corporate" onclick="setMode('corp')" class="vibe-btn vibe-active">On Duty</button>
+            <button id="btn-street" onclick="setMode('street')" class="vibe-btn text-zinc-500">Off Duty</button>
         </div>
-        <div class="bg-white text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-transform cursor-pointer">Shop Now</div>
+
+        <div class="unbounded text-[10px] hidden md:block border-b border-white pb-1">EST. 2026 / PUNE</div>
     </nav>
 
-    <main class="relative z-10">
+    <main class="relative z-10 pt-40 px-10">
         
-        <section class="h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
-            <div class="absolute inset-0 flex items-center justify-center -z-10 opacity-10">
-                <h2 class="syne text-[30vw] font-black italic">ANI</h2>
-            </div>
-
-            <div class="text-center">
-                <h1 class="syne text-[10vw] md:text-[15vw] leading-[0.85] font-black italic glitch">AURA<br>SHIFT</h1>
-                <p class="mt-8 text-zinc-500 tracking-[0.8em] text-[10px] uppercase font-black translate-y-10 opacity-0" id="hero-tagline">Beyond the Corporate Blueprint</p>
-            </div>
-
-            <div class="hero-img-container mt-[-10vh] md:mt-[-20vh]">
-                <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=800" 
-                     id="hero-img" class="w-[300px] md:w-[500px] hero-img" alt="Premium Black Shirt">
-            </div>
-        </section>
-
-        <section class="py-40 px-6">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    
-                    <div class="bento-dark rounded-[3rem] p-12 min-h-[600px] flex flex-col justify-between relative overflow-hidden group">
-                        <div class="z-10">
-                            <span class="text-[#00FF41] font-mono text-xs">// ENGINE_01</span>
-                            <h2 class="syne text-5xl font-black uppercase mt-4 italic">The <br> Customizer</h2>
-                        </div>
-                        
-                        <div class="z-10 flex flex-col gap-8">
-                            <div class="flex gap-4">
-                                <button onclick="changeAura('#00FF41')" class="w-14 h-14 rounded-full bg-[#00FF41] border-4 border-black ring-1 ring-white"></button>
-                                <button onclick="changeAura('#fff')" class="w-14 h-14 rounded-full bg-white border-4 border-black"></button>
-                                <button onclick="changeAura('#ff003c')" class="w-14 h-14 rounded-full bg-[#ff003c] border-4 border-black"></button>
-                            </div>
-                            <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest max-w-xs leading-relaxed">
-                                Our AI maps your vibe onto premium textiles. Change the Aura. Change the perception.
-                            </p>
-                        </div>
-
-                        <div id="aura-glow" class="absolute -bottom-20 -right-20 w-80 h-80 bg-[#00FF41]/20 rounded-full blur-[100px] transition-all duration-1000"></div>
+        <div class="max-w-[1400px] mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+                <div class="lg:col-span-8">
+                    <h1 id="hero-text" class="unbounded text-[8vw] md:text-[10vw] leading-[0.85] font-black uppercase italic">
+                        RECODE <br> <span class="text-zinc-800 tracking-tighter" id="hero-subtext">THE OFFICE</span>
+                    </h1>
+                </div>
+                <div class="lg:col-span-4 pb-4">
+                    <p class="text-zinc-400 text-sm font-light leading-relaxed max-w-xs">
+                        High-performance apparel for the new corporate elite. Custom-engineered textures, AI-mapped silhouettes.
+                    </p>
+                    <div class="mt-8 flex gap-4">
+                        <div class="w-12 h-[1px] bg-white self-center"></div>
+                        <span class="unbounded text-[10px] font-bold tracking-widest italic">SCROLL TO CUSTOMIZE</span>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bento-dark rounded-[3rem] p-8 flex flex-col justify-center items-center group">
-                            <img src="https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=400" class="w-40 grayscale group-hover:grayscale-0 transition-all duration-700">
-                            <span class="mt-6 text-[10px] font-black uppercase tracking-widest text-[#00FF41]">Drop 01: Core</span>
-                        </div>
-                        <div class="bento-dark rounded-[3rem] p-8 flex flex-col justify-between bg-zinc-900 overflow-hidden relative">
-                            <h3 class="syne text-xl font-black italic uppercase z-10">Upload <br> Your Mood</h3>
-                            <div class="mt-10 border-2 border-dashed border-zinc-700 p-8 rounded-2xl flex flex-col items-center justify-center gap-4 z-10">
-                                <span class="text-xs font-bold text-zinc-500 uppercase italic">Drop photo here</span>
-                            </div>
-                        </div>
-                        <div class="bento-dark rounded-[3rem] col-span-2 p-12 flex justify-between items-center group hover:bg-[#00FF41] hover:text-black transition-all cursor-pointer">
-                            <span class="syne text-4xl font-black uppercase italic italic">Launch the Lab</span>
-                            <span class="text-4xl">→</span>
-                        </div>
-                    </div>
-
                 </div>
             </div>
-        </section>
 
+            <div class="mt-20 grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <div class="relative group h-[700px] bg-zinc-900 overflow-hidden rounded-[2rem] flex items-center justify-center">
+                    <div class="absolute top-10 left-10 z-20">
+                        <span class="unbounded text-[10px] bg-white text-black px-4 py-2 rounded-full font-black uppercase" id="badge">Prototype_V1</span>
+                    </div>
+                    <img id="main-product" src="https://images.unsplash.com/photo-1539109132382-3bf1558784cc?q=80&w=800" 
+                         class="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:scale-105" alt="Luxury Fit">
+                    
+                    <div class="absolute bottom-10 right-10 flex flex-col gap-2 text-right">
+                        <span class="text-[10px] font-mono text-zinc-500 italic">FABRIC: AI-KNIT SILK</span>
+                        <span class="text-[10px] font-mono text-zinc-500 italic">FIT: ADAPTIVE CORPORATE</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="flex-1 bg-zinc-100 rounded-[2rem] p-10 text-black flex flex-col justify-between group cursor-pointer hover:bg-white transition-colors">
+                        <h3 class="unbounded text-3xl font-black italic leading-none uppercase tracking-tighter">The <br> Aura Lab</h3>
+                        <div class="flex flex-col gap-4">
+                            <p class="text-xs font-bold uppercase tracking-widest">Upload your brand identity. <br> We build the uniform.</p>
+                            <div class="h-[100px] border-2 border-dashed border-zinc-300 rounded-2xl flex items-center justify-center group-hover:border-black transition-all">
+                                <span class="unbounded text-[8px] font-black tracking-[0.3em]">UPLOAD CORPORATE LOGO</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 bg-zinc-900 border border-zinc-800 rounded-[2rem] p-10 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="unbounded text-4xl font-black italic text-zinc-800">01.</span>
+                            <div class="w-10 h-10 rounded-full border border-zinc-700 flex items-center justify-center text-zinc-500">→</div>
+                        </div>
+                        <div>
+                            <h4 class="unbounded text-xl font-black italic uppercase">Bespoke <br> Architecture</h4>
+                            <p class="text-zinc-500 text-[10px] mt-4 font-bold tracking-widest uppercase">1-on-1 tailor sessions via AI</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </main>
 
-    <footer class="p-20 text-center border-t border-zinc-900">
-        <div class="syne text-6xl font-black opacity-10 mb-8 italic">ANI BOY.</div>
-        <p class="text-zinc-700 text-[10px] font-black uppercase tracking-[1em]">Engineered for 2026</p>
+    <footer class="mt-40 p-20 text-center flex flex-col items-center gap-10">
+        <h2 class="unbounded text-[15vw] font-black opacity-5 select-none">ANI BOY.</h2>
+        <div class="flex gap-20 text-[10px] font-black tracking-[0.5em] text-zinc-500">
+            <span>INSTAGRAM</span>
+            <span>WHATSAPP</span>
+            <span>PUNE HQ</span>
+        </div>
     </footer>
 
     <script>
-        // 1. Sexy Mouse Follower
+        // 1. Cursor Logic
         const cursor = document.getElementById('cursor');
+        const aura = document.getElementById('cursor-aura');
         document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.6, ease: "power4.out" });
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0, ease: "none" });
+            gsap.to(aura, { x: e.clientX - 15, y: e.clientY - 15, duration: 0.2, ease: "power2.out" });
         });
 
-        // 2. 3D Tilt Effect on Hero Image
-        const heroImg = document.getElementById('hero-img');
-        document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.clientX) / 25;
-            const y = (window.innerHeight / 2 - e.clientY) / 25;
-            gsap.to(heroImg, { rotationY: x, rotationX: -y, duration: 1, ease: "power2.out" });
-        });
+        // 2. Mode Switching Logic (Mind-Blowing Feature)
+        function setMode(mode) {
+            const heroText = document.getElementById('hero-text');
+            const subText = document.getElementById('hero-subtext');
+            const mainImg = document.getElementById('main-product');
+            const badge = document.getElementById('badge');
 
-        // 3. Entrance Animations
-        window.onload = () => {
-            gsap.to("#hero-tagline", { opacity: 1, y: 0, duration: 1.5, ease: "expo.out", delay: 0.8 });
-            gsap.from(".hero-img", { scale: 0.5, opacity: 0, duration: 2, ease: "expo.out" });
-        };
-
-        // 4. Customizer Action
-        function changeAura(color) {
-            gsap.to("#aura-glow", { backgroundColor: color, duration: 1 });
-            gsap.to(".glitch", { color: color, duration: 0.5 });
-            // Simulate a "re-coloring" of the brand accent
-            document.documentElement.style.setProperty('--accent', color);
+            if(mode === 'corp') {
+                document.getElementById('btn-corporate').classList.add('vibe-active');
+                document.getElementById('btn-street').classList.remove('vibe-active');
+                gsap.to("body", { backgroundColor: "#000", color: "#fff", duration: 0.8 });
+                heroText.innerHTML = 'RECODE <br> <span class="text-zinc-800 tracking-tighter">THE OFFICE</span>';
+                mainImg.src = "https://images.unsplash.com/photo-1539109132382-3bf1558784cc?q=80&w=800";
+                badge.innerText = "CORPORATE_V1";
+            } else {
+                document.getElementById('btn-street').classList.add('vibe-active');
+                document.getElementById('btn-corporate').classList.remove('vibe-active');
+                gsap.to("body", { backgroundColor: "#fff", color: "#000", duration: 0.8 });
+                heroText.innerHTML = 'BREAK <br> <span class="text-zinc-200 tracking-tighter">THE RULES</span>';
+                mainImg.src = "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=800";
+                badge.innerText = "STREET_V1";
+            }
         }
+
+        // 3. Simple Canvas "Aura" Background
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        function drawAura() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const time = Date.now() * 0.001;
+            const x = canvas.width/2 + Math.sin(time) * 100;
+            const y = canvas.height/2 + Math.cos(time) * 100;
+            
+            const grad = ctx.createRadialGradient(x, y, 0, x, y, 400);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            
+            ctx.fillStyle = grad;
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+            requestAnimationFrame(drawAura);
+        }
+        drawAura();
     </script>
 </body>
 </html>
