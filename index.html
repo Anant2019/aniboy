@@ -3,235 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANI BOY | THE OMNI-ENGINE</title>
+    <title>ANI BOY | DISRUPT THE UNIFORM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Plus+Jakarta+Sans:wght@300;800&family=Syne:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #000; --bg: #fff; --card: #f4f4f4; --accent: #666; }
-        .mode-off { --primary: #fff; --bg: #050505; --card: #111; --accent: #00ff41; }
+        :root { --p: #000; --bg: #fff; --card: #f9f9f9; --accent: #000; }
+        .rebel-state { --p: #fff; --bg: #000; --card: #111; --accent: #ff3c00; }
 
         body { 
-            background-color: var(--bg); 
-            color: var(--primary); 
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
+            background: var(--bg); color: var(--p); 
+            transition: background 1s cubic-bezier(0.8, 0, 0.2, 1), color 0.5s ease;
+            font-family: 'Space Grotesk', sans-serif; overflow-x: hidden;
         }
-
         .unbounded { font-family: 'Unbounded', sans-serif; }
-        
-        /* Layout Fixes to prevent overlapping */
-        .section-container { position: relative; width: 100%; padding: 100px 5%; z-index: 10; }
-        
-        /* Product Grid Styling */
-        .product-card { 
-            background: var(--card); 
-            border-radius: 32px; 
-            overflow: hidden; 
-            transition: transform 0.4s ease, background 0.6s ease;
-        }
-        .product-card:hover { transform: translateY(-10px); }
-        .product-img { width: 100%; height: 400px; object-fit: cover; transition: filter 0.5s ease; }
 
-        /* Aura Lab Canvas */
+        /* HUD Navigation */
+        .hud-nav { position: fixed; top: 0; width: 100%; z-index: 100; mix-blend-difference; padding: 40px; }
+        
+        /* The Mode Switcher (The Core Disruptor) */
+        .mode-trigger {
+            position: fixed; top: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 4px; padding: 6px; background: rgba(128,128,128,0.1);
+            backdrop-filter: blur(20px); border-radius: 100px; z-index: 200; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .mode-btn { padding: 10px 24px; border-radius: 100px; font-size: 10px; font-weight: 900; text-transform: uppercase; transition: 0.4s; letter-spacing: 2px; color: #888; }
+        .mode-btn.active { background: var(--p); color: var(--bg); }
+
+        /* Section Architecture */
+        .view-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 5%; border-bottom: 1px solid rgba(128,128,128,0.1); }
+        
+        /* Product Engine */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; width: 100%; }
+        .p-card { background: var(--card); border-radius: 20px; overflow: hidden; position: relative; border: 1px solid transparent; transition: 0.4s; }
+        .p-card:hover { border-color: var(--accent); }
+        .p-img { width: 100%; height: 450px; object-fit: cover; }
+
+        /* The Aura Engine - Zero Overlap Layout */
+        .aura-container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        @media (max-width: 1024px) { .aura-container { grid-template-columns: 1fr; } }
+        
         #aura-canvas { 
-            background: var(--card); 
-            height: 600px; 
-            border-radius: 40px; 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
+            position: relative; width: 100%; aspect-ratio: 1/1; 
+            background: var(--card); border-radius: 40px; display: flex; 
+            align-items: center; justify-content: center; overflow: hidden;
         }
+        .shirt-svg { width: 80%; height: auto; transition: fill 0.8s ease; }
+        #drag-logo { position: absolute; width: 100px; cursor: move; z-index: 50; }
 
-        /* Draggable Logo */
-        #user-logo { position: absolute; width: 70px; cursor: move; z-index: 50; mix-blend-mode: multiply; }
-        .mode-off #user-logo { mix-blend-mode: screen; }
-
-        /* Floating Mode Toggle */
-        .vibe-dock {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; display: flex; gap: 8px; padding: 6px;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-radius: 100px;
-        }
-        .vibe-btn { 
-            padding: 12px 24px; border-radius: 100px; font-size: 10px; 
-            font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #666;
-        }
-        .vibe-btn.active { background: white; color: black; }
-
-        /* Cart Sidebar */
-        #cart-panel {
-            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px; height: 100%;
-            background: var(--bg); border-left: 1px solid rgba(128,128,128,0.2);
-            transform: translateX(100%); transition: transform 0.5s ease; z-index: 2000;
-        }
+        /* Floating Cart HUD */
+        .cart-indicator { position: fixed; right: 40px; top: 40px; z-index: 100; cursor: pointer; font-weight: 900; font-size: 12px; }
     </style>
 </head>
-<body class="mode-on">
+<body class="duty-on">
 
-    <nav class="fixed top-0 w-full z-[100] px-10 py-6 flex justify-between items-center mix-blend-difference text-white">
+    <div class="hud-nav">
         <div class="unbounded text-2xl font-black italic">ani boy.</div>
-        <div class="flex gap-8 text-[10px] font-black uppercase tracking-widest">
-            <span class="cursor-pointer" onclick="toggleCart(true)">Bag (<span id="cart-count">0</span>)</span>
-        </div>
-    </nav>
-
-    <header class="section-container min-h-[70vh] flex flex-col justify-center items-center">
-        <h1 id="hero-title" class="unbounded text-[10vw] leading-none text-center font-black italic uppercase">
-            RECODE<br><span class="opacity-10">UNIFORM</span>
-        </h1>
-        <p id="hero-tag" class="mt-8 font-bold uppercase tracking-[0.5em] text-[10px] text-zinc-500">Corporate-Grade. Rebel-Minded.</p>
-    </header>
-
-    <section class="section-container">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex justify-between items-end mb-12">
-                <h2 class="unbounded text-3xl font-black italic uppercase" id="catalog-title">On-Duty / Essentials</h2>
-                <div class="text-[10px] font-bold opacity-40">2026_COLLECTION_v1</div>
-            </div>
-
-            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                </div>
-        </div>
-    </section>
-
-    <section id="lab" class="section-container bg-zinc-50 dark:bg-zinc-900 transition-colors">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-            
-            <div class="lg:col-span-6">
-                <div id="aura-canvas">
-                    <img id="lab-shirt" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800" class="w-[400px] drop-shadow-2xl" alt="Custom Shirt">
-                    <img id="user-logo" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="hidden" alt="Logo">
-                </div>
-            </div>
-
-            <div class="lg:col-span-6 space-y-8">
-                <h2 class="unbounded text-5xl font-black italic uppercase">The Lab.</h2>
-                <p class="text-zinc-500 font-medium">Position your mark. Define your aura. Drag your uploaded identity across the garment to see the future of bespoke clothing.</p>
-                
-                <div class="flex flex-col gap-4">
-                    <label class="cursor-pointer border-2 border-dashed border-zinc-300 p-8 rounded-3xl text-center hover:border-black transition-all">
-                        <span class="text-[10px] font-black uppercase tracking-widest">Upload Custom Logo</span>
-                        <input type="file" class="hidden" onchange="handleUpload(event)">
-                    </label>
-                    <button onclick="addToBag('Custom Aura Shirt', 7999)" class="w-full bg-black text-white py-6 rounded-full unbounded text-[10px] font-black uppercase tracking-[0.3em]">Commit to Archive</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div id="cart-panel" class="p-10 flex flex-col">
-        <div class="flex justify-between items-center mb-10">
-            <h3 class="unbounded text-xl font-black uppercase italic">Bag</h3>
-            <button onclick="toggleCart(false)" class="font-bold text-xs">[CLOSE]</button>
-        </div>
-        <div id="cart-items" class="flex-grow space-y-4"></div>
-        <div class="pt-8 border-t">
-            <div class="flex justify-between mb-4 font-bold"><span>Total</span><span id="cart-total">₹0</span></div>
-            <button class="w-full bg-black text-white py-6 rounded-full text-[10px] font-black uppercase tracking-widest">Checkout</button>
-        </div>
     </div>
 
-    <div class="vibe-dock">
-        <button id="btn-on" onclick="setMode('on')" class="vibe-btn active">On Duty</button>
-        <button id="btn-off" onclick="setMode('off')" class="vibe-btn">Off Duty</button>
+    <div class="mode-trigger">
+        <button id="on-btn" onclick="switchState('on')" class="mode-btn active">On Duty</button>
+        <button id="off-btn" onclick="switchState('off')" class="mode-btn">Off Duty</button>
+    </div>
+
+    <div class="cart-indicator" onclick="toggleCart()">BAG (<span id="cart-qty">0</span>)</div>
+
+    <section class="view-section">
+        <div class="max-w-[1200px] mx-auto text-center">
+            <h1 id="hero-main" class="unbounded text-[10vw] leading-[0.8] font-black italic uppercase">RECODE<br><span class="opacity-10">UNIFORM</span></h1>
+            <p class="mt-12 text-[10px] font-black tracking-[0.5em] text-zinc-500 uppercase">Architecture of the Modern Rebel</p>
+        </div>
+    </section>
+
+    <section class="view-section">
+        <div class="flex justify-between items-end mb-12">
+            <h2 id="cat-title" class="unbounded text-4xl font-black italic uppercase tracking-tighter">Essentials</h2>
+            <div class="text-[10px] font-bold opacity-30">BATCH_2026.04</div>
+        </div>
+        <div id="catalog" class="product-grid">
+            </div>
+    </section>
+
+    <section id="lab" class="view-section">
+        <div class="aura-container">
+            <div id="aura-canvas">
+                <svg viewBox="0 0 100 100" class="shirt-svg">
+                    <path id="shirt-path" fill="#f0f0f0" d="M20,10 L80,10 L90,30 L80,35 L80,90 L20,90 L20,35 L10,30 Z" />
+                </svg>
+                <img id="drag-logo" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="hidden" alt="Logo">
+            </div>
+
+            <div class="space-y-10">
+                <h2 class="unbounded text-5xl font-black italic uppercase">Aura Lab.</h2>
+                <p class="text-zinc-500 font-medium">This is not a shop. It is a forge. Recode the color palette. Position your legacy. In 2026, the corporate logo belongs to the individual.</p>
+                
+                <div class="grid grid-cols-4 gap-4">
+                    <button onclick="mapColor('#ffffff')" class="h-10 w-10 rounded-full border-2 border-zinc-200 bg-white"></button>
+                    <button onclick="mapColor('#0a0a0a')" class="h-10 w-10 rounded-full border-2 border-zinc-200 bg-black"></button>
+                    <button onclick="mapColor('#ff3c00')" class="h-10 w-10 rounded-full border-2 border-zinc-200 bg-orange-600"></button>
+                    <button onclick="mapColor('#00ff41')" class="h-10 w-10 rounded-full border-2 border-zinc-200 bg-green-500"></button>
+                </div>
+
+                <label class="block p-10 border-2 border-dashed border-zinc-200 rounded-3xl text-center cursor-pointer hover:border-black transition-all">
+                    <span class="text-[10px] font-black uppercase tracking-widest">Upload Personal Mark</span>
+                    <input type="file" class="hidden" onchange="loadMark(event)">
+                </label>
+
+                <button onclick="addToCart('Custom Aura Shirt', 8499)" class="w-full bg-black text-white py-8 rounded-full unbounded text-[10px] font-black uppercase tracking-[0.4em] shadow-2xl">Deploy to Bag</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full md:w-[450px] bg-white text-black z-[300] translate-x-full transition-transform duration-700 p-12 flex flex-col shadow-2xl border-l">
+        <div class="flex justify-between items-center mb-10 border-b pb-8">
+            <h3 class="unbounded text-xl font-black uppercase italic">Inventory</h3>
+            <button onclick="toggleCart()" class="font-bold text-[10px]">[X]</button>
+        </div>
+        <div id="cart-list" class="flex-grow space-y-6"></div>
+        <div class="pt-8 border-t">
+            <div class="flex justify-between mb-8 font-black text-xs uppercase"><span>Total</span><span id="cart-total">₹0</span></div>
+            <button class="w-full bg-black text-white py-6 rounded-full text-[10px] font-black uppercase tracking-widest">Execute Order</button>
+        </div>
     </div>
 
     <script>
         gsap.registerPlugin(Draggable);
 
-        const products = {
+        // DATA: Market-Ready Products
+        const db = {
             on: [
-                { name: "Executive Silk Blazer", price: 18500, img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600" },
-                { name: "Minimalist Oxford", price: 6200, img: "https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?q=80&w=600" },
-                { name: "Structured Chino", price: 5800, img: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=600" }
+                { id: 1, name: "Monolith Blazer", price: 21500, img: "https://images.unsplash.com/photo-1594932224440-946775b81016?q=80&w=600" },
+                { id: 2, name: "Silk Recode Shirt", price: 7200, img: "https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?q=80&w=600" },
+                { id: 3, name: "Logic Trousers", price: 6800, img: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=600" }
             ],
             off: [
-                { name: "Cyber Rebel Hoodie", price: 9500, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600" },
-                { name: "Recode Graphic Tee", price: 3200, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" },
-                { name: "Impact Cargo Tech", price: 11200, img: "https://images.unsplash.com/photo-1517441531661-5903e9e957ad?q=80&w=600" }
+                { id: 4, name: "Anarchy Tech Hoodie", price: 12500, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600" },
+                { id: 5, name: "Glitch Graphic Tee", price: 4200, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" },
+                { id: 6, name: "Ghost Cargo Pants", price: 15400, img: "https://images.unsplash.com/photo-1517441531661-5903e9e957ad?q=80&w=600" }
             ]
         };
 
-        let currentCart = [];
-
-        function setMode(mode) {
+        // 1. DISRUPTIVE MODE ENGINE
+        function switchState(mode) {
             const body = document.body;
-            const title = document.getElementById('hero-title');
-            const catalogTitle = document.getElementById('catalog-title');
+            const hero = document.getElementById('hero-main');
+            const catT = document.getElementById('cat-title');
             
-            // UI Button states
-            document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-${mode}`).classList.add('active');
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`${mode}-btn`).classList.add('active');
 
             if(mode === 'off') {
-                body.className = 'mode-off';
-                title.innerHTML = 'BREAK<br><span class="text-[#00ff41]">RULES</span>';
-                catalogTitle.innerText = "Off-Duty / Rebel Drop";
-                renderProducts(products.off);
+                body.classList.add('rebel-state');
+                hero.innerHTML = 'BREAK<br><span class="text-[#ff3c00]">ENTITY</span>';
+                catT.innerText = "Rebel Drop / 01";
+                render(db.off);
             } else {
-                body.className = 'mode-on';
-                title.innerHTML = 'RECODE<br><span class="opacity-10">UNIFORM</span>';
-                catalogTitle.innerText = "On-Duty / Essentials";
-                renderProducts(products.on);
+                body.classList.remove('rebel-state');
+                hero.innerHTML = 'RECODE<br><span class="opacity-10">UNIFORM</span>';
+                catT.innerText = "Essentials / On-Duty";
+                render(db.on);
             }
         }
 
-        function renderProducts(list) {
-            const grid = document.getElementById('product-grid');
+        // 2. AURA ENGINE: COLOR & LOGO
+        function mapColor(color) {
+            gsap.to("#shirt-path", { fill: color, duration: 0.6 });
+        }
+
+        function loadMark(e) {
+            const logo = document.getElementById('drag-logo');
+            const file = e.target.files[0];
+            if (file) {
+                const r = new FileReader();
+                r.onload = (event) => {
+                    logo.src = event.target.result;
+                    logo.classList.remove('hidden');
+                    Draggable.create("#drag-logo", { bounds: "#aura-canvas", inertia: true });
+                };
+                r.readAsDataURL(file);
+            }
+        }
+
+        // 3. E-COMMERCE CORE
+        let cart = [];
+        function render(list) {
+            const grid = document.getElementById('catalog');
             grid.innerHTML = list.map(p => `
-                <div class="product-card">
-                    <img src="${p.img}" class="product-img" alt="${p.name}">
-                    <div class="p-8">
-                        <div class="flex justify-between items-start mb-6">
-                            <h4 class="unbounded text-xs font-black uppercase italic tracking-tighter">${p.name}</h4>
-                            <span class="text-xs font-bold">₹${p.price.toLocaleString()}</span>
+                <div class="p-card">
+                    <img src="${p.img}" class="p-img">
+                    <div class="p-10">
+                        <div class="flex justify-between mb-6 items-start">
+                            <span class="unbounded text-xs font-black italic uppercase">${p.name}</span>
+                            <span class="font-mono text-xs">₹${p.price.toLocaleString()}</span>
                         </div>
-                        <button onclick="addToBag('${p.name}', ${p.price})" class="w-full py-4 border border-zinc-200 text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">Add to Bag</button>
+                        <button onclick="addToCart('${p.name}', ${p.price})" class="w-full border py-4 text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">Add to Inventory</button>
                     </div>
                 </div>
             `).join('');
-            gsap.from(".product-card", { opacity: 0, y: 30, duration: 0.5, stagger: 0.1 });
+            gsap.from(".p-card", { opacity: 0, y: 50, duration: 1, stagger: 0.1 });
         }
 
-        function handleUpload(event) {
-            const file = event.target.files[0];
-            const logo = document.getElementById('user-logo');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    logo.src = e.target.result;
-                    logo.classList.remove('hidden');
-                    Draggable.create("#user-logo", { bounds: "#aura-canvas", inertia: true });
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function addToBag(name, price) {
-            currentCart.push({ name, price });
-            document.getElementById('cart-count').innerText = currentCart.length;
-            updateCartUI();
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            document.getElementById('cart-qty').innerText = cart.length;
+            updateCart();
             toggleCart(true);
         }
 
-        function updateCartUI() {
-            const list = document.getElementById('cart-items');
-            const total = document.getElementById('cart-total');
-            list.innerHTML = currentCart.map(i => `<div class="flex justify-between text-xs font-bold uppercase"><span>${i.name}</span><span>₹${i.price}</span></div>`).join('');
-            const sum = currentCart.reduce((a, b) => a + b.price, 0);
-            total.innerText = `₹${sum.toLocaleString()}`;
+        function updateCart() {
+            const list = document.getElementById('cart-list');
+            list.innerHTML = cart.map(i => `<div class="flex justify-between uppercase text-[10px] font-black"><span>${i.name}</span><span>₹${i.price}</span></div>`).join('');
+            const sum = cart.reduce((a, b) => a + b.price, 0);
+            document.getElementById('cart-total').innerText = `₹${sum.toLocaleString()}`;
         }
 
-        function toggleCart(show) {
-            document.getElementById('cart-panel').style.transform = show ? "translateX(0)" : "translateX(100%)";
+        function toggleCart(force) {
+            const c = document.getElementById('cart-drawer');
+            if(force === true) c.classList.remove('translate-x-full');
+            else c.classList.toggle('translate-x-full');
         }
 
-        // Initialize
-        setMode('on');
+        // INITIALIZE
+        switchState('on');
     </script>
 </body>
 </html>
